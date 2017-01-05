@@ -426,6 +426,16 @@ class TestGoogleCalendar < Minitest::Test
         assert_equal JSON.parse(@event.to_json), expected_structure
       end
 
+      should "set timezone when supplied with one" do
+        @event = Event.new
+        @event.timezone = "America/New_York"
+        assert_equal @event.timezone, { "timeZone" => "America/New_York" }
+
+        json = JSON.parse(@event.to_json)
+        assert_equal json['start']['timeZone'], "America/New_York"
+        assert_equal json['end']['timeZone'], "America/New_York"
+      end
+
       should "return date instead of dateTime for all-day event" do
         @event = Event.new(all_day: "2016-10-15")
         json = JSON.parse(@event.to_json)

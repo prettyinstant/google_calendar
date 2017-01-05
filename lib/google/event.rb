@@ -26,6 +26,7 @@ module Google
   # * +duration+ - The duration of the event in seconds. Read only.
   # * +html_link+ - An absolute link to this event in the Google Calendar Web UI. Read only.
   # * +raw+ - The full google json representation of the event. Read only.
+  # * +timezone+ - The timezone to be set on the event. Read/write. Example: "America/New_York"
   # * +visibility+ - The visibility of the event (*'default'*, 'public', 'private', 'confidential'). Read Write.
   # * +extended_properties+ - Custom properties which may be shared or private. Read Write
   # * +guests_can_invite_others+ - Whether attendees other than the organizer can invite others to the event (*true*, false). Read Write.
@@ -279,7 +280,10 @@ module Google
         attributes["id"] = id
       end
 
-      if timezone_needed?
+      if timezone_set?
+        attributes['start'].merge!(timezone)
+        attributes['end'].merge!(timezone)
+      elsif timezone_needed?
         attributes['start'].merge!(local_timezone_attributes)
         attributes['end'].merge!(local_timezone_attributes)
       end
@@ -344,6 +348,29 @@ module Google
     #
     def reminders_json
       reminders_attributes.to_json
+    end
+
+
+
+    #
+    # Sets the timezone
+    #
+    def timezone=(tz_name)
+      @timezone = { "timeZone" => tz_name }
+    end
+
+    #
+    # Gets the timezone
+    #
+    def timezone
+      @timezone
+    end
+
+    #
+    # Checks if timezone is supplied
+    #
+    def timezone_set?
+      !@timezone.nil?
     end
 
     #
