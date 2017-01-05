@@ -554,11 +554,11 @@ module Google
       return nil unless time_hash
 
       if time_hash['date']
-        Time.parse(time_hash['date']).utc
+        Time.parse(time_hash['date'])
       elsif time_hash['dateTime']
-        Time.parse(time_hash['dateTime']).utc
+        Time.parse(time_hash['dateTime'])
       else
-        Time.now.utc
+        Time.now
       end
     end
 
@@ -574,7 +574,7 @@ module Google
     #
     def self.parse_time(time) #:nodoc
       raise ArgumentError, "Start Time must be either Time or String" unless (time.is_a?(String) || time.is_a?(Time))
-      (time.is_a? String) ? Time.parse(time) : time.dup.utc
+      (time.is_a? String) ? Time.parse(time) : time.dup
     end
 
     #
